@@ -1,0 +1,80 @@
+{% extends 'index.html' %}
+{% block title %}Detail image{% endblock title %}
+{% block head %}<link rel="stylesheet" href="https://unpkg.com/jcrop/dist/jcrop.css"/>{% endblock head %}
+{% block content %}
+    <div class="container">
+        <div class="mb-3 px-3 py-3 my-5">
+            <img src="/{{ object.image }}" class="card-img" id="target"/>
+        </div>
+        <div class="card">
+            <div class="card-body d-flex justify-content-between align-items-center coords">
+                <li class="nav-item">X: <input type="text" value=""></li>
+                <li class="nav-item">Y: <input type="text" value=""></li>
+                <li class="nav-item">W: <input type="text" value=""></li>
+                <li class="nav-item">H: <input type="text" value=""></li>
+                <button class="btn btn-success" onclick="blur_effect()">Blur</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script src="https://unpkg.com/jcrop"></script>
+    <script defer>
+
+        let rect = document.getElementById('target').getBoundingClientRect();
+        let height = rect.height;
+        let width = rect.width;
+        let size = [width, height]
+        
+        let info
+        const jcrop = Jcrop.attach("target", {
+            multi: true,
+        });
+
+        const getPicInfo = async (id) => {
+            return fetch(`/images/amazon_face/${id}`)
+                .then((res) => res.json())
+                .then((data) => data)
+                .catch((err) => alert(err));
+        }
+
+        const processImage = async () => {
+            info = await getPicInfo('{{ object.id }}')
+            const img = document.getElementById('target')
+            for (x of info) {
+                const width = x.Width * img.width;
+                const left = x.Left * img.width;
+                const top = x.Top * img.height;
+                const height = x.Height * img.height;
+                jcrop.newWidget(Jcrop.Rect.create(left, top, width, height), {});
+            }
+        }
+        
+        processImage();
+
+        const blurImage = async (coords) => {
+            const id = '{{ object.id }}';
+            const csrf_token = "{{ csrf_token }}"
+            const options = {
+                method: 'POST',
+                body: JSON.stringify({ coords:coords, size:size }),
+                headers: {
+                    'X-CSRFToken': csrf_token,
+                    'Content-Type': 'application/json',
+                }
+            };
+            return fetch(`/images/blur_image/${id}`, options)
+        }
+
+        const blur_effect = async () => {
+            let crops = jcrop.crops;
+            const coords = [];
+            crops.forEach((crop) => {
+                coords.push({ x: crop.pos.x, y: crop.pos.y, w: crop.pos.w, h: crop.pos.h})
+            });
+            await blurImage(coords);
+            window.location.href = "/images/album/";
+        };
+
+    </script>
+{% endblock script %}

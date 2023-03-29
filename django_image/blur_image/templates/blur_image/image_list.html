@@ -1,0 +1,46 @@
+{% extends 'index.html' %}
+{% block title %}Album{% endblock title %}
+{% block content %}
+  <section class="py-3 text-center container">
+    <div class="px-4 py-3 my-3 text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+        <circle cx="12" cy="13" r="4"></circle>
+      </svg>
+      <h1 class="display-5 fw-bold">Album</h1>
+    </div>
+  </section>
+  {% if  object_list %}
+    <div class="album py-5 bg-light">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+          {% for image in object_list %}
+            <div class="col">
+              <div class="card shadow-sm">
+                <img src="/{{ image.image }}" class="card-img-top" alt="No file available">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-sm btn-outline-secondary" onclick="location.href='{% url 'image_detail_view' image.id %}'">View</button>
+                      {% if not image.is_blur %}
+                      <button type="button" class="btn btn-sm btn-outline-secondary" onclick="location.href='{% url 'image_blur_view' image.id %}'">Blur</button>
+                      {% endif %}
+                      <button type="button" class="btn btn-sm btn-outline-secondary" onclick="location.href='{% url 'image_delete_view' image.id %}'">Delete</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="container text-center">
+      <div class="shadow p-3 mb-5 bg-info rounded">
+        <h3>No file available</h3>
+        <button type="button" class="btn btn-outline-dark" onclick="location.href='{% url 'image_create_view' %}'">Upload</button>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

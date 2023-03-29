@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+{% block title %}Blur image{% endblock title %}
+{% block content %}
+<section class="py-5 text-center container">
+  <div class="row py-lg-5">
+    <div class="col-lg-6 col-md-8 mx-auto">
+      <h1 class="mb-3 fw-semibold lh-1">Blur image</h1>
+      <p class="lead text-muted">Este proyecto contiene las funcionalidades necesarias para realizar un difuminado en las caras de una imagen.</p>
+      <p>
+        <a href="{% url 'image_create_view' %}" class="btn btn-primary my-2">Upload</a>
+        <a href="{% url 'image_list_view' %}" class="btn btn-secondary my-2">Album</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

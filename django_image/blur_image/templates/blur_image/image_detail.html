@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+{% block title %}Detail image{% endblock title %}
+{% block content %}
+    <div class="container">
+        <div class="card mb-3 px-3 py-3 my-5">
+            <img src="/{{ object.image }}" class="card-img"/>
+            <div class="card-body">
+              <h5 class="card-title">{{ object.name_image }}</h5>
+            </div>
+        </div>
+    </div>
+{% endblock %}
